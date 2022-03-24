@@ -1,0 +1,239 @@
+{% extends 'apprsolve/base.html' %}
+{% load static %}
+
+{% block title %}
+Rubik's Cube Solver
+{% endblock %}
+
+{% block body %}
+
+    <div class='container'>
+        <div class='row h-100'>
+            <div class='col-12 my-auto'>
+                <div class="scene" id="scene">
+                    <div class="pivot centered" id="pivot" style="transform: rotateX(-35deg) rotateY(-45deg);">
+                        <div class="cube" id="cube">
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                            <div class="piece">
+                                <div class="element L"></div>
+                                <div class="element R"></div>
+                                <div class="element U"></div>
+                                <div class="element D"></div>
+                                <div class="element B"></div>
+                                <div class="element F"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="credits">
+                <div class="text" style="position: initial">html/js adapted from https://codepen.io/Omelyan</div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+{% endblock %}
