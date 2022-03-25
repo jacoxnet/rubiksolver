@@ -26,32 +26,18 @@ Rubik's Cube Solver
             <div id='saverestore' class='col-12 text-center'>
                 <button class="btn btn-primary" type="button" onclick='exportCube()'>Save Cube</button>
                 <button class="btn btn-warning" type="button" onclick='importCube()'>Restore Cube</button>
+                <button class="btn btn-secondary" type="button" onclick='getCabezas()'>Get Cabezas Spec</button>
+                <button class="btn btn-warning" type="button" onclick='randomizeCube()'>Randomize</button>
+                
             </div>
         </div>
     </div>
 
 
     
-<script>
-    
-    // restores a description of a complete cube in this form:
-    // { 'FLU': ['red', 'white', 'blue'], ... }
-    function restoreCube(newCube) {
-   
-        for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++) {
-            const cubeName = allCubies[cubieIndex];
-            console.log('cubename', cubeName);
-            console.log('data', newCube[cubeName]);
-            const cubeColorList = newCube[cubeName];
-            console.log('color list ', cubeColorList);
-            for (let face = 0; face < cubeName.length; face++) {
-                pieces[cubieIndex].querySelector('.element.' + cubeName[face]).firstChild.className = 
-                    'sticker ' + cubeColorList[face];
-            }
-        }
-    }
+<script> 
 
-    // retrieves cube stored in server
+    // retrieves cube stored in server and calls putCubeSpec
     async function importCube() {
         const formData = new FormData();
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
@@ -61,42 +47,21 @@ Rubik's Cube Solver
         });
         const data = await response.json();
         console.log('Success77:', data);
-        restoreCube(data);
+        putCubeSpec(data.cubed);
     }
     
-    // exports a description of a complete cube in this form:
-    // { 'FLU': ['red', 'white', 'blue'], ... }
-    function exportCube()
-    {
-        var returnVal = {};
+    // calls getCubeSpec and sends data to server
+    async function exportCube() {
+        const cubed = getCubeSpec();
         const formData = new FormData();
-
-        for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
-        {
-            let cubeName = allCubies[cubieIndex];
-            let cubeColorList = [];
-            for (let face = 0; face < cubeName.length; face++)
-            {
-                let color = pieces[cubieIndex].querySelector('.element.' + 
-                    cubeName[face]).firstChild.className.split(' ')[1];
-                cubeColorList.push(color);
-            }
-            returnVal[cubeName] = cubeColorList;
-        }
-        console.log(returnVal);
-        formData.append('cube', JSON.stringify(returnVal));
+        formData.append('cubed', JSON.stringify(cubed));
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-        fetch('{% url "info" %}', {
+        const response = await fetch('{% url "info" %}', {
             method: 'POST',
             body: formData
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
         });
+        const data = await response.json();
+        console.log('Success:', data);
     }
 
 </script>

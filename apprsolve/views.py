@@ -22,12 +22,39 @@ def cube(request):
 # route /info
 def info(request):
     if request.method == "POST":
-        cubed = request.POST.get('cube')
-    print (json.loads(cubed))
-    return JsonResponse(cubed, safe=False)
+        cubed = json.loads(request.POST.get('cubed'))
+        print (cubed)
+        return JsonResponse(cubed, safe=False)
  
 # route /restore
 def restore(request):
     if request.method == "POST":
-        cubed = {'FLU': ['red', 'green', 'white'], 'FU': ['orange', 'yellow'], 'FUR': ['white', 'blue', 'orange'], 'FL': ['blue', 'yellow'], 'F': ['red'], 'FR': ['green', 'white'], 'FLD': ['yellow', 'green', 'orange'], 'FD': ['white', 'red'], 'FRD': ['red', 'yellow', 'green'], 'L': ['blue'], 'LB': ['green', 'red'], 'LBD': ['orange', 'blue', 'yellow'], 'LU': ['yellow', 'green'], 'LD': ['green', 'orange'], 'LUB': ['green', 'white', 'orange'], 'U': ['yellow'], 'UB': ['orange', 'white'], 'UR': ['blue', 'orange'], 'UBR': ['white', 'red', 'blue'], 'B': ['orange'], 'BR': ['red', 'green'], 'BD': ['white', 'blue'], 'BRD': ['blue', 'red', 'yellow'], 'R': ['green'], 'RD': ['blue', 'red'], 'D': ['white']}
-        return JsonResponse(json.dumps(cubed), safe=False)
+        cubed = {'cubed': {'FLU': ['red', 'green', 'white'], 
+                            'FU': ['orange', 'yellow'], 
+                            'FRU': ['white', 'blue', 'orange'], 
+                            'FL': ['blue', 'yellow'], 
+                            'F': ['red'], 
+                            'FR': ['green', 'white'], 
+                            'FLD': ['yellow', 'green', 'orange'], 
+                            'FD': ['white', 'red'], 
+                            'FRD': ['red', 'yellow', 'green'], 
+                            'L': ['blue'], 
+                            'BL': ['green', 'red'], 
+                            'BLD': ['orange', 'blue', 'yellow'], 
+                            'LU': ['yellow', 'green'], 
+                            'LD': ['green', 'orange'], 
+                            'BLU': ['green', 'white', 'orange'], 
+                            'U': ['yellow'], 
+                            'BU': ['orange', 'white'], 
+                            'RU': ['blue', 'orange'], 
+                            'BRU': ['white', 'red', 'blue'], 
+                            'B': ['orange'], 
+                            'BR': ['red', 'green'], 
+                            'BD': ['white', 'blue'], 
+                            'BRD': ['blue', 'red', 'yellow'], 
+                            'R': ['green'], 
+                            'RD': ['blue', 'red'], 
+                            'D': ['white']
+                        }
+                }
+        return JsonResponse(cubed, safe=False)
