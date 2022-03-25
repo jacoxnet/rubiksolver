@@ -91,7 +91,7 @@ function assembleCube()
             let n = document.createElement('div')
             n.setAttribute('class', 'sticker ' + initialColors[allCubies[cubieIndex][face]]);
             // put cabezas number on face of sticker
-            n.innerHTML = cabList[allCubies[cubieIndex]][face];
+            // n.innerHTML = cabList[allCubies[cubieIndex]][face];
             p.appendChild(n);
             // set proper xyz translation for cubie based on faces
             translate = translate + 'translate' + rotAxis[allCubies[cubieIndex][face]][0] + 
@@ -100,6 +100,23 @@ function assembleCube()
         // form translation move - rotate 0 is in there for
         // replacement in move function
         pieces[cubieIndex].style.transform = 'rotateX(0deg) ' + translate;
+    }
+}
+
+// assign Cabezas numbers and place on stickers
+function assignCabezas() {
+    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
+    {
+        let cubieName = allCubies[cubieIndex];
+        // sets cabcube to the list of cabezas face numbers for that cubie
+        cabcube = cabList[cubieName];
+        // cycle through each letter of facename
+        for (let face = 0; face < cubieName.length; face++)
+        {
+            let n = pieces[cubieIndex].querySelector('.element.' + allCubies[cubieIndex][face] + '>div');
+            // put cabezas number on face of sticker
+            n.innerHTML = cabList[cubieName][face];
+        }
     }
 }
 
