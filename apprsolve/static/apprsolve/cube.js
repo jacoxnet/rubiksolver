@@ -27,8 +27,8 @@ transition['S'] = {'L': 'U', 'U': 'R', 'R': 'D', 'D': 'L'};
 transition['B'] = {'B': 'B', 'R': 'U', 'U': 'L', 'L': 'D', 'D': 'R'};
 
 // initial colors of cube by face
-var initialColors = {'F': 'orange', 'B': 'red', 'L': 'blue', 'R': 'green', 
-    'U': 'white', 'D': 'yellow'};
+var initialColors = {'F': 'red', 'B': 'orange', 'L': 'blue', 'R': 'green', 
+    'U': 'yellow', 'D': 'white'};
 
 // rotation axes by face of cube (+ means clockwise, minus countercw)
 var rotAxis = {'F': 'Z+', 'B': 'Z-', 'L': 'X-', 'R': 'X+', 'U': 'Y-', 'D': 'Y+',
@@ -39,15 +39,6 @@ var rotAxis = {'F': 'Z+', 'B': 'Z-', 'L': 'X-', 'R': 'X+', 'U': 'Y-', 'D': 'Y+',
 // scene points to html id scene
 // pivot points to html id pivot
 var allCubies, pieces, scene, pivot;
-
-var reverseCube = {"FLU": ['red', 'green', 'yellow'], "FU": ['red', 'yellow'], "FRU": ['red', 'white', 'yellow'],
-                   "FR": ['red', 'white'], "FRD": ['red', 'white', 'orange'], "FD": ['red', 'orange'],
-                   "FLD": ['red', 'green', 'orange'], "FL": ['red', 'green'], "F": ['red'],
-                   "LU": ['green', 'yellow'], "U": ['yellow'], "RU": ['white', 'yellow'], "R": ['white'],
-                   "RD": ['white', 'orange'], "D": ['orange'], "LD": ['green', 'orange'], "L": ['green'],
-                   "BLD": ['blue', 'green', 'orange'], "BD": ['blue', 'orange'], "BRD": ['blue', 'white', 'orange'],
-                   "BR": ['blue', 'white'], "BRU": ['blue', 'white', 'yellow'], "BU": ['blue', 'yellow'], 
-                   "BLU": ['blue', 'green', 'yellow'], "BL": ['blue', 'green'], "B": ['blue'] };
 
 function assembleCube() 
 {
@@ -75,42 +66,6 @@ function assembleCube()
     // place logo
     let logoSticker = document.querySelector('#U>.element.U').firstChild;
     logoSticker.className += ' logo';
-}
-
-// imports a description of a complete cube in this form:
-// { 'FLU': ['red', 'white', 'blue'], ... }
-function importCube(newCube)
-{
-    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
-    {
-        let cubeName = allCubies[cubieIndex];
-        let cubeColorList = newCube[cubeName];
-        for (let face = 0; face < cubeName.length; face++)
-        {
-            pieces[cubieIndex].querySelector('.element.' + cubeName[face]).firstChild.className = 
-                'sticker ' + cubeColorList[face];
-        }
-    }
-}
-
-// exports a description of a complete cube in this form:
-// { 'FLU': ['red', 'white', 'blue'], ... }
-function exportCube()
-{
-    var returnVal = {}
-    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
-    {
-        let cubeName = allCubies[cubieIndex];
-        let cubeColorList = [];
-        for (let face = 0; face < cubeName.length; face++)
-        {
-            let color = pieces[cubieIndex].querySelector('.element.' + 
-                cubeName[face]).firstChild.className.split(' ')[1];
-            cubeColorList.push(color);
-        }
-        returnVal[cubeName] = cubeColorList;
-    }
-    return returnVal;
 }
 
 // Swaps stickers of the face by direction, performed after animation 
@@ -238,6 +193,20 @@ function checkKeys(event)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const wholecube = document.getElementById('cube');
+    // create DOM framework for 26 pieces children to cube
+    const piecefaces = ['L', 'R', 'U', 'D', 'B', 'F'];
+    for (i = 0; i < 26; i++) {
+        const newpiece = document.createElement('div');
+        newpiece.setAttribute('class', 'piece');
+        // create DOM nodes for individual faces of a cube
+        piecefaces.forEach(facename => {
+            const newface = document.createElement('div');
+            newface.setAttribute('class', 'element ' + facename);
+            newpiece.appendChild(newface);
+        });
+        wholecube.appendChild(newpiece);
+    }
     pieces = document.querySelectorAll('.piece');
     scene = document.getElementById('scene');
     pivot = document.getElementById('pivot');
