@@ -41,7 +41,7 @@ Rubik's Cube Solver
     async function importCube() {
         const formData = new FormData();
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-        const response = await fetch('{% url "restore" %}', {
+        const response = await fetch('{% url "default" %}', {
             method: 'POST',
             body: formData
         });
@@ -56,7 +56,7 @@ Rubik's Cube Solver
         const formData = new FormData();
         formData.append('cubed', JSON.stringify(cubed));
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-        const response = await fetch('{% url "info" %}', {
+        const response = await fetch('{% url "save" %}', {
             method: 'POST',
             body: formData
         });

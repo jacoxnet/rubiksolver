@@ -50,26 +50,29 @@ class Cubie:
 # Cube is a list of Cubies. These connections are the associations between faces
 # and cubies
 class Cube:
-    def __init__(self):
-        self.cubieList = Cube.makeCube()
-        self.exportCube = Cube.exportCube(self)
-        
+
+    @staticmethod 
     def makeCube():
         connections = [[18, 11, 6], [19, 7], [20, 27, 8], [21, 14], [22], [23, 30], 
                     [24, 17, 45], [25, 46], [26, 33, 47], [13], [41, 12], 
                     [44, 15, 51], [10, 3], [16, 48], [38, 9, 0], [4], [37, 1], 
                     [28, 5], [36, 29, 2], [40], [39, 32], [43, 52], [42, 35, 53], 
                     [31], [34, 50], [49]]
-        cube = []
+        cls = []
         for mycubie in connections:
-            cube.append(Cubie(mycubie))
-        return cube
+            cls.append(Cubie(mycubie))
+        return cls
 
     def exportCube(self):
         exportDict = {}
         for cubie in self.cubieList:
             exportDict[cubie.name] = cubie.colors
         return exportDict
+
+    def importCube(self, spec):
+        for cubie in self.cubieList:
+            cubie.colors = spec[cubie.name]
+        return self
 
     def __repr__(self):
         return (json.dumps(self.exportCube))
