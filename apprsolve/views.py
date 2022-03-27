@@ -35,10 +35,5 @@ def default(request):
     if request.method == "POST":
         newCube = Cube()
         cubed = {}
-        cubed['cubed'] = newCube.exportCube
+        cubed['cubed'] = newCube.exportCube()
         return JsonResponse(cubed, safe=False)
-
-def solve(request):
-    if request.method == "POST":
-        cubed = json.loads(request.POST.get('cubed'))
-
