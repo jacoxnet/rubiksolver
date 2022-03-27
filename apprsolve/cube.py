@@ -51,6 +51,9 @@ class Cubie:
 # and cubies
 class Cube:
 
+    def __init__(self):
+        cubieList: []
+
     @staticmethod 
     def makeCube():
         connections = [[18, 11, 6], [19, 7], [20, 27, 8], [21, 14], [22], [23, 30], 
