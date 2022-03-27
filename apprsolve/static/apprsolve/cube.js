@@ -71,37 +71,48 @@ var rotAxis = {'F': 'Z+', 'B': 'Z-', 'L': 'X-', 'R': 'X+', 'U': 'Y-', 'D': 'Y+',
 // pieces is an array pointing to DOM objects for each cubie
 // scene points to html id scene
 // pivot points to html id pivot
-var allCubies, pieces, scene, pivot;
+var wholeCube, allCubies, pieces, scene, pivot;
 
 function assembleCube() 
 {
-    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
-    {
-        // set id of piece to be facename (eg 'FRU')
-        pieces[cubieIndex].setAttribute('id', allCubies[cubieIndex]);
+    wholeCube = document.getElementById('cube');
+    // These three slices are sufficient for entire cube of 26 cubies
+    allCubies = [].concat(slice['F']).concat(slice['S']).concat(slice['B']);
+    // create DOM framework for all pieces children to cube
+    for (let cubieIndex = 0; cubieIndex < allCubies.length; cubieIndex++) {
+        const newpiece = document.createElement('div');
+        newpiece.setAttribute('class', 'piece');
+        // set id of piece to be cubiename (eg 'FRU')
+        cubieName = allCubies[cubieIndex];
+        newpiece.setAttribute('id', cubieName);
         // initialize translation phrase to add to cubie style
         let translate = '';
-        // sets cabcube to the list of cabezas face numbers for that cubie
-        cabcube = cabList[allCubies[cubieIndex]];
-        // cycle through each letter of facename
-        for (let face = 0; face < allCubies[cubieIndex].length; face++)
-        {
-            // set color of face
-            let p = pieces[cubieIndex].querySelector('.element.' + allCubies[cubieIndex][face]);
-            let n = document.createElement('div')
-            n.setAttribute('class', 'sticker ' + initialColors[allCubies[cubieIndex][face]]);
-            // put cabezas number on face of sticker
-            // n.innerHTML = cabList[allCubies[cubieIndex]][face];
-            p.appendChild(n);
+        // create DOM nodes for individual visible faces of a cube
+        for (let facename of cubieName) {
+            const newface = document.createElement('div');
+            newface.setAttribute('class', 'element ' + facename);
+            // initially color is undefined
+            const newcolor = document.createElement('div');
+            newcolor.setAttribute('class', 'sticker ' + initialColors[facename]);
+            newface.appendChild(newcolor);
+            newpiece.appendChild(newface);
             // set proper xyz translation for cubie based on faces
-            translate = translate + 'translate' + rotAxis[allCubies[cubieIndex][face]][0] + 
-                '(' + rotAxis[allCubies[cubieIndex][face]][1] + '2em) ';
-        }
+            translate = translate + 'translate' + rotAxis[facename][0] + 
+                '(' + rotAxis[facename][1] + '2em) ';
+    
+        };
         // form translation move - rotate 0 is in there for
         // replacement in move function
-        pieces[cubieIndex].style.transform = 'rotateX(0deg) ' + translate;
+        newpiece.style.transform = 'rotateX(0deg) ' + translate;
+        // append to cube
+        wholeCube.appendChild(newpiece);
     }
+    // set some useful globals 
+    pieces = document.querySelectorAll('.piece');        
+    scene = document.getElementById('scene');
+    pivot = document.getElementById('pivot');
 }
+    
 
 // assign Cabezas numbers and place on stickers
 function assignCabezas() {
@@ -122,24 +133,16 @@ function assignCabezas() {
 
 // Swaps stickers of the face by direction, performed after animation 
 // to rotate the face (direction 1 cw, -1 ccw)
-function swapStickers(face, direction) 
-{
+function swapStickers(face, direction) {
     // number of cubies we're shifting 
     numCubies = slice[face].length;
     // end slices have a middle cube we don't swap
-    if (!(face == 'M' || face == 'E' || face == 'S'))
-    {
+    if (!(face == 'M' || face == 'E' || face == 'S')) {
         numCubies -= 1;
     }
-    // if clockwise, perform three times
-    count = 3;
-    // if counterclockwise, perform once
-    if (direction == -1) 
-    {
-        count = 1;
-    }
-    for (let counter = 0; counter < count; counter++)
-    {
+    // if clockwise, perform three times; cc once
+    count = (direction == 1)? 3 : 1;
+    for (let counter = 0; counter < count; counter++) {
         // by swapping every second color, we rotate face by two cubes
         for (cubeIndex = 0; cubeIndex < numCubies - 2; cubeIndex++)
         {
@@ -343,25 +346,7 @@ function getCubeSpec() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const wholecube = document.getElementById('cube');
-    // create DOM framework for 26 pieces children to cube
-    for (i = 0; i < 26; i++) {
-        const newpiece = document.createElement('div');
-        newpiece.setAttribute('class', 'piece');
-        // create DOM nodes for individual faces of a cube
-        visFaces.forEach(facename => {
-            const newface = document.createElement('div');
-            newface.setAttribute('class', 'element ' + facename);
-            newpiece.appendChild(newface);
-        });
-        wholecube.appendChild(newpiece);
-    }
-    pieces = document.querySelectorAll('.piece');
-    scene = document.getElementById('scene');
-    pivot = document.getElementById('pivot');
-    // assemble allCubies list from slices - 3 slices are sufficient
-    // for whole cube
-    allCubies = [].concat(slice['F']).concat(slice['S']).concat(slice['B']);
+    
     assembleCube();
 
     window.addEventListener('keydown', checkKeys);

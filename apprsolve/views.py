@@ -58,3 +58,14 @@ def restore(request):
                         }
                 }
         return JsonResponse(cubed, safe=False)
+
+def defaultCube():
+    for cabeza in range(54):
+        cubeFace = OneFace(cabeza)
+        
+    for side in x:
+        for sside in side:
+            print(sside)
+        for sside in side:
+            print(side, sside)
+        for 
