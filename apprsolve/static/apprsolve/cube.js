@@ -1,5 +1,9 @@
-// cube movements implemented here
-var movements = ['L', 'M', 'R', 'U', 'E', 'D', 'F', 'S', 'B']
+// cube movements defined here
+var movements = ['L', 'M', 'R', 'U', 'E', 'D', 'F', 'S', 'B'];
+var ccmovements = ['l', 'm', 'r', 'u', 'e', 'd', 'f', 's', 'b'];
+var rotations = ['X', 'Y', 'Z', 'x', 'y', 'z'];
+var rotation_equiv = {'x': 'rLM', 'X': 'Rlm', 'y': 'uED', 'Y': 'Ued',
+                      'z': 'fsB', 'Z':'FSb'};
 
 // arrays of slices of the cube
 // each array needs to be in order of clockwise movement
@@ -8,7 +12,7 @@ slice['L'] = [ "FLU", "FL", "FLD", "LD", "BLD", "BL", "BLU", "LU", "L" ],
 slice['M'] = [ "FU", "F", "FD", "D", "BD", "B", "BU", "U" ],
 slice['R'] = [ "FRD", "FR", "FRU", "RU", "BRU", "BR", "BRD", "RD", "R" ],
 slice['U'] = [ "FLU", "LU", "BLU", "BU", "BRU", "RU", "FRU", "FU", "U" ],
-slice['E'] = [ "FL", "L", "BL", "B", "BR", "R", "FR", "F" ],
+slice['E'] = [ "FL", "F", "FR", "R", "BR", "B", "BL", "L" ],
 slice['D'] = [ "FLD", "FD", "FRD", "RD", "BRD", "BD", "BLD", "LD", "D" ],
 slice['F'] = [ "FLU", "FU", "FRU", "FR", "FRD", "FD", "FLD", "FL", "F" ],
 slice['S'] = [ "LU", "U", "RU", "R", "RD", "D", "LD", "L" ],
@@ -53,7 +57,7 @@ transition['L'] = {'L': 'L', 'F': 'D', 'D': 'B', 'B': 'U', 'U': 'F'};
 transition['M'] = {'F': 'D', 'D': 'B', 'B': 'U', 'U': 'F'};
 transition['R'] = {'R': 'R', 'F': 'U', 'U': 'B', 'B': 'D', 'D': 'F'};
 transition['U'] = {'U': 'U', 'F': 'L', 'L': 'B', 'B': 'R', 'R': 'F'};
-transition['E'] = {'F': 'L', 'L': 'B', 'B': 'R', 'R': 'F'};
+transition['E'] = {'F': 'R', 'R': 'B', 'B': 'L', 'L': 'F'};
 transition['D'] = {'D': 'D', 'F': 'R', 'R': 'B', 'B': 'L', 'L': 'F'};
 transition['F'] = {'F': 'F', 'L': 'U', 'U': 'R', 'R': 'D', 'D': 'L'};
 transition['S'] = {'L': 'U', 'U': 'R', 'R': 'D', 'D': 'L'};
@@ -65,7 +69,7 @@ var initialColors = {'F': 'red', 'B': 'orange', 'L': 'blue', 'R': 'green',
 
 // rotation axes by face of cube (+ means clockwise, minus countercw)
 var rotAxis = {'F': 'Z+', 'B': 'Z-', 'L': 'X-', 'R': 'X+', 'U': 'Y-', 'D': 'Y+',
-    'M': 'X-', 'E': 'Y-', 'S': 'Z+'};
+    'M': 'X-', 'E': 'Y+', 'S': 'Z+'};
 
 // allCubies is an array of the names of all 26 cubies
 // pieces is an array pointing to DOM objects for each cubie
@@ -113,6 +117,32 @@ function assembleCube()
     pivot = document.getElementById('pivot');
 }
     
+function normalizeCube() {
+    console.log('normalizing');
+    var ycubie, rcubie;
+    const ndict = {"UR": "y", "UL": "Y", "UF": "" , "UB": "yy", 
+                   "DR": "YXX", "DL": "zXz", "DF": "ZZ", "DB": "XX", 
+                   "LU": "yX", "LD": "xY", "LF": "z", "LB": "xxz",
+                   "RU": "ZY", "RD": "Zy", "RF": "Z", "RB": "XYX",
+                   "FU": "YYX", "FD": "x", "FL": "xY", "FR": "xy", 
+                   "BU": "X", "BD": "zzX", "BL": "Yz", "BR": "yZ"}
+    // find positions of yellow and red middle pieces
+    // dict tell us how to rotate to normalize U=red and F=yelllow
+    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++) {  
+        let cubieName = allCubies[cubieIndex];
+        if ((cubieName.length == 1) && (pieces[cubieIndex].querySelector('.sticker').getAttribute('class') == 'sticker yellow')) {
+            ycubie = cubieName;
+        }
+        else if ((cubieName.length == 1) && (pieces[cubieIndex].querySelector('.sticker').getAttribute('class') == 'sticker red')) {
+            rcubie = cubieName;
+        }
+    }
+    console.log('y is at ', ycubie);
+    console.log('r is at ', rcubie);
+    console.log('moving ', ndict[ycubie + rcubie]);
+    multiMove(ndict[ycubie + rcubie]);
+}
+
 
 // assign Cabezas numbers and place on stickers
 function assignCabezas() {
@@ -203,57 +233,71 @@ function quarterMove(face, direction)
     requestAnimationFrame(rotateCubies);
 }
 
-// perform a single move of slice of cube (not perspective moves)
+// perform a single quarter-turn move of cube
+// if the move is a rotation, perform all equivalent moves
 function singleMove(move) {
+    //console.log('singlemove call', move);
     if (movements.includes(move)) {
         quarterMove(move, -1);
     }
-    else if (movements.includes(move.toUpperCase())) {
+    else if (ccmovements.includes(move)) {
         quarterMove(move.toUpperCase(), 1);
+    }
+    else if (rotations.includes(move)) {
+        // console.log('rotation active');
+        // console.log('move is', move);
+        // console.log('equiv is ', rotation_equiv[move]);
+        for (let i = 0; i < rotation_equiv[move].length; i++) {
+           singleMove(rotation_equiv[move][i]);
+        }
     }
 }
 
 // perform a series of moves in order with delay
 function multiMove(moves) {
-    for (let i = 0; i < moves.length; i++) {
-        setTimeout((m) => singleMove(m), 500 * i, moves[i])
+    if (moves) {
+        for (let i = 0; i < moves.length; i++) {
+            setTimeout((m) => singleMove(m), 500 * i, moves[i])
+        }
     }
 }
 
 // randomize the cube by shuffling moves
 function randomizeCube() {
-    var nomiddles = []
+    var moves = []
     movements.forEach((x) => {
-        if (x != 'S' && x != 'M' && x != 'E') {
-            nomiddles.push(x);
-        }
+            moves.push(x);
     });
-    var moves = [];
-    // create list of 5 copies of all movements
-    for (let i = 0; i < 5; i++) {
-        nomiddles.forEach((x) =>  moves.push(x));
+    var rmoves = [];
+    // create list of 3 copies of all movements
+    for (let i = 0; i < 3; i++) {
+        moves.forEach((x) =>  rmoves.push(x));
     }
     //shuffle
-    for (let i = moves.length - 1; i > 0; i--) {
+    for (let i = rmoves.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [moves[i], moves[j]] = [moves[j], moves[i]];
+        [rmoves[i], rmoves[j]] = [rmoves[j], rmoves[i]];
     }
-    console.log(moves);
-    multiMove(moves); 
+    console.log(rmoves);
+    multiMove(rmoves); 
+}
+
+function buttMove(button) {
+    if (button.length == 1) {
+        const key = button.toLowerCase();
+        singleMove(key);
+    }
+    else {
+        singleMove(button.substring(0, 1));
+    }
 }
 
 function checkKeys(event)
 {
-    if (movements.includes(event.key))
-    {
-        quarterMove(event.key, -1);
+    if (movements.includes(event.key) || ccmovements.includes(event.key) || rotations.includes(event.key)) {
+        singleMove(event.key);
     }
-    else if (movements.map(c => c.toLowerCase()).includes(event.key))
-    {
-        quarterMove(event.key.toUpperCase(), 1);
-    }
-    else
-    {
+    else {
         let mark = false, x = 0, y = 0;
         switch (event.key)
         {
@@ -288,22 +332,22 @@ function checkKeys(event)
 
    // reads the current cube spec and translates to Cabezas notation
    function getCabezas() {
-    cubeSpec = getCubeSpec();
-    // allocate space for returned value 
-    returnVal = new Array(54).fill(' ');
-    // cycle through all cubies
-    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++) {
-        const cubeName = allCubies[cubieIndex];
-        // sets cabCube to the list of cabezas face numbers for that cubie
-        const cabCube = cabList[cubeName];
-        // cycle through each letter of facename
-        for (let face = 0; face < cubeName.length; face++) {            
-            let color = pieces[cubieIndex].querySelector('.element.' + 
-                cubeName[face]).firstChild.className.split(' ')[1];
-            // assign the proper position in the translated return value with the 1st letter of color
-            returnVal[cabCube[face]] = color.substring(0,1);
+        cubeSpec = getCubeSpec();
+        // allocate space for returned value 
+        returnVal = new Array(54).fill(' ');
+        // cycle through all cubies
+        for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++) {
+            const cubeName = allCubies[cubieIndex];
+            // sets cabCube to the list of cabezas face numbers for that cubie
+            const cabCube = cabList[cubeName];
+            // cycle through each letter of facename
+            for (let face = 0; face < cubeName.length; face++) {            
+                let color = pieces[cubieIndex].querySelector('.element.' + 
+                    cubeName[face]).firstChild.className.split(' ')[1];
+                // assign the proper position in the translated return value with the 1st letter of color
+                returnVal[cabCube[face]] = color.substring(0,1);
+            }
         }
-    }
     alert(returnVal.join(''));
     return returnVal;
 }

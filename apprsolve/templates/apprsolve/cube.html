@@ -22,16 +22,40 @@ Rubik's Cube Solver
     </div>
 
     <div class='container'>
+        <div class='row justif-content-center'>
+            <div id='movebutts' class='col-12 text-center'>
+                {% for butt in moves1 %}
+                    <button class="btn btn-sm btn-secondary" type="button" onclick='buttMove("{{ butt }}")'>{{ butt }}</button>
+                {% endfor %}
+            </div>
+            <div id='movebutts2' class='col-12 text-center'>
+                {% for butt in moves2 %}
+                    <button class="btn btn-sm btn-secondary" type="button" onclick='buttMove("{{ butt }}")'>{{ butt }}</button>
+                {% endfor %}
+            </div>
+
         <div class='row justify-content-center'>
             <div id='saverestore' class='col-12 text-center'>
                 <button class="btn btn-primary" type="button" onclick='exportCube()'>Save Cube</button>
                 <button class="btn btn-warning" type="button" onclick='importCube()'>Restore Cube</button>
-                <button class="btn btn-secondary" type="button" onclick='getCabezas()'>Get Cabezas Spec</button>
+                <button class="btn btn-secondary" type="button" onclick='normalizeCube()'>Normalize Cube</button>
                 <button class="btn btn-warning" type="button" onclick='randomizeCube()'>Randomize</button>
+                <button class="btn btn-success" type="button" onclick='solveCube()'>Solve</button>
                 
             </div>
         </div>
-    </div>
+        <div class='row justify-content-center'>
+            <div id='moves' class='col-12 text-center'>
+                <form id='movelist' action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input autocomplete="off" autofocus class="form-control"
+                            name="movelist" id='mymoves' placeholder="Move List" type="text" value=''>
+                    </div>
+                </form>
+            </div>
+        </div>
+
 
 
     
@@ -51,6 +75,21 @@ Rubik's Cube Solver
     }
     
     // calls getCubeSpec and sends data to server
+    async function solveCube() {
+        const cubed = getCubeSpec();
+        const formData = new FormData();
+        formData.append('cubed', JSON.stringify(cubed));
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        const response = await fetch('{% url "solve" %}', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        console.log('Success:', data);
+        multiMove(data.solution);
+    }
+
+    // calls getCubeSpec and sends data to server
     async function exportCube() {
         const cubed = getCubeSpec();
         const formData = new FormData();
@@ -63,6 +102,7 @@ Rubik's Cube Solver
         const data = await response.json();
         console.log('Success:', data);
     }
+
 
 </script>
 

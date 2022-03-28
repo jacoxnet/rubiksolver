@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.urls import reverse
 import json
+from rubik_solver import utils
 
 from apprsolve.rubik_init import register_new_user
 from apprsolve.cube import Cube
@@ -16,7 +17,9 @@ def index(request):
         username = register_new_user(request)
         print('your username is ', username)
         context = {
-            "name": username
+            "name": username,
+            "moves1": ["U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"],
+            "moves2": ["M", "M'", "S", "S'", "E", "E'", "X", "X'", "Y", "Y'", "Z", "Z'"]
         }
         return render(request, "apprsolve/cube.html", context)
 
@@ -37,3 +40,29 @@ def default(request):
         cubed = {}
         cubed['cubed'] = newCube.exportCube()
         return JsonResponse(cubed, safe=False)
+
+# route solve
+def solve(request):
+    if request.method == "POST":
+        cubed = json.loads(request.POST.get('cubed'))
+        cabeza = Cube().importCube(cubed).getCabezaNotation()
+        print("Solve request for cube ", cabeza)
+        solution_list = utils.solve(cabeza, "Kociemba")
+        print("Solution ", solution_list)
+        translated_moves = []
+        for move in solution_list:
+            if move.double:
+                translated_moves.append(move.face.lower())
+                translated_moves.append(move.face.lower())
+            elif move.clockwise:
+                translated_moves.append(move.face.lower())
+            else:
+                translated_moves.append(move.face.upper())
+        print("Solution translation", translated_moves)
+        solution = {}
+        solution["solution"] = translated_moves
+        return JsonResponse(solution, safe=False)
+
+
+        
+

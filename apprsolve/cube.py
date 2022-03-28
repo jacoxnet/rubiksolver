@@ -71,7 +71,7 @@ class Cube:
         for cubie in self.cubieList:
             for f in cubie.faces:
                 returnVal[f.cabezaID] = f.color[0]
-        return returnVal
+        return "".join(returnVal)
 
     def putCabezaNotation(self, cabezasSpec):
         
