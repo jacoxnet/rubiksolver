@@ -199,8 +199,7 @@ function swapStickers(face, direction) {
 
 // Animates rotation of the face - clockwise if direction is 1
 // and counterclockwise if direction is -1
-function quarterMove(face, direction)
- {
+function quarterMove(face, direction) {
     // rotAxis[face][1] is a plus or minus - reverse direction to account for that
     var dir = direction;
     if (rotAxis[face][1] == '-')
@@ -230,14 +229,13 @@ function quarterMove(face, direction)
             return;
         }
     };
-
     requestAnimationFrame(rotateCubies);
 }
 
 // perform a single quarter-turn move of cube
 // if the move is a rotation, perform all equivalent moves
+// returns promise for async operation
 function singleMove(move) {
-    //console.log('singlemove call', move);
     if (movements.includes(move)) {
         quarterMove(move, -1);
     }
@@ -249,18 +247,22 @@ function singleMove(move) {
         // console.log('move is', move);
         // console.log('equiv is ', rotation_equiv[move]);
         for (let i = 0; i < rotation_equiv[move].length; i++) {
-           singleMove(rotation_equiv[move][i]);
+            singleMove(rotation_equiv[move][i]);
         }
     }
+    describeCube();
 }
 
 // perform a series of moves in order with delay
+// input is a list of chars not a string
+// also fills in #mymoves box with translated move list
 function multiMove(moves) {
     if (moves) {
         document.querySelector('#mymoves').setAttribute('value', moves.join(''));
         for (let i = 0; i < moves.length; i++) {
             setTimeout((m) => singleMove(m), 500 * i, moves[i])
         }
+        setTimeout(() => describeCube(), 500 * moves.length);
     }
 }
 
@@ -285,19 +287,13 @@ function randomizeCube() {
 }
 
 function buttMove(button) {
-    if (button.length == 1) {
-        const key = button.toLowerCase();
-        singleMove(key);
-    }
-    else {
-        singleMove(button.substring(0, 1));
-    }
+    multiMove([button]);
 }
 
 function checkKeys(event)
 {
     if (movements.includes(event.key) || ccmovements.includes(event.key) || rotations.includes(event.key)) {
-        singleMove(event.key);
+        multiMove([event.key]);
     }
     else {
         let mark = false, x = 0, y = 0;
@@ -350,9 +346,19 @@ function checkKeys(event)
                 returnVal[cabCube[face]] = color.substring(0,1);
             }
         }
-    alert(returnVal.join(''));
-    return returnVal;
+    return returnVal.join('');
 }
+
+    // place description of cube in six fields on page of DOM
+    function describeCube() {
+        let c = getCabezas();
+        document.getElementById('up').value = c.substring(0,9);
+        document.getElementById('left').value = c.substring(9,18);
+        document.getElementById('front').value = c.substring(18,27);
+        document.getElementById('right').value = c.substring(27,36);
+        document.getElementById('back').value = c.substring(36,45);
+        document.getElementById('down').value = c.substring(45,54);
+    }
 
 // argument is a JSON description of a complete cube in this form:
 // { 'FLU': ['red', 'white', 'blue'], ... }
@@ -395,5 +401,5 @@ document.addEventListener('DOMContentLoaded', () => {
     
     assembleCube();
 
-    window.addEventListener('keydown', checkKeys);
+    ///window.addEventListener('keydown', checkKeys);
 });

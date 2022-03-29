@@ -108,3 +108,30 @@ background-color: #FF6907;
 .cube > .piece > .element > .sticker.red {
 background-color: #B60101;
 }
+
+.welcome1, .welcome2 {
+    text-align: center;
+    background-color: lightgray;
+}
+
+.welcome1 {
+    font-size:xx-large;
+    border-top: 2px solid black;
+}
+
+.welcome2 {
+    font-size:large;
+    font-style:italic;
+    padding-bottom: 5px;
+    /*margin-bottom: 10px;*/
+    border-bottom: 2px solid black;
+}
+
+
+button {
+    margin-top: 5px;
+}
+
+input {
+    margin-top: 0.5em;
+}

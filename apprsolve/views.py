@@ -18,28 +18,48 @@ def index(request):
         print('your username is ', username)
         context = {
             "name": username,
-            "moves1": ["U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"],
-            "moves2": ["M", "M'", "S", "S'", "E", "E'", "X", "X'", "Y", "Y'", "Z", "Z'"]
+            "moves1": ["u", "U", "d", "D", "l", "L", "r", "R", "f", "F", "b", "B"],
+            "moves2": ["m", "M", "s", "S", "e", "E", "x", "X", "y", "Y", "z", "Z"]
         }
         return render(request, "apprsolve/cube.html", context)
 
-# route /save
+# route save/
 def save(request):
     if request.method == "POST":
         cubed = json.loads(request.POST.get('cubed'))
-        print("printing cubed", cubed)
-        newCube = Cube().importCube(cubed)
-        print('printing newcube', newCube)
-        return JsonResponse(cubed, safe=False)
- 
+        newcube = Cube()
+        newcube.importCube(cubed)
+        request.session['storedcube'] = newcube
+        return JsonResponse(True, safe=False)
+
+# route restore/
+def restore(request):
+    if request.method == "POST":
+        try:
+            # try to load stored cube
+            sc = request.session.get('storedcube')
+        except:
+            # if error load default cube
+            sc = Cube()
+        ecube = {"cube": sc.exportCube()}
+        return JsonResponse(ecube, safe=False)
+
 # route /default 
 # returns default cube
 def default(request):
     if request.method == "POST":
         newCube = Cube()
-        cubed = {}
-        cubed['cubed'] = newCube.exportCube()
-        return JsonResponse(cubed, safe=False)
+        ecube = {"cube": newCube.exportCube()}
+        return JsonResponse(ecube, safe=False)
+
+def importCube(request):
+    if request.method == "POST":
+        cabeza = json.loads(request.POST.get('cabeza'))
+        newCube = Cube()
+        newCube.putCabezaNotation(cabeza)
+        ecube = {"cube": newCube.exportCube()}
+        return JsonResponse(ecube, safe=False)
+
 
 # route solve
 def solve(request):

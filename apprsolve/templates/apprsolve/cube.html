@@ -22,6 +22,7 @@ Rubik's Cube Solver
     </div>
 
     <div class='container'>
+        <!-- Individual button movements -->
         <div class='row justif-content-center'>
             <div id='movebutts' class='col-12 text-center'>
                 {% for butt in moves1 %}
@@ -34,46 +35,72 @@ Rubik's Cube Solver
                 {% endfor %}
             </div>
 
+        <!--Line of button functions -->
         <div class='row justify-content-center'>
             <div id='saverestore' class='col-12 text-center'>
-                <button class="btn btn-primary" type="button" onclick='exportCube()'>Save Cube</button>
-                <button class="btn btn-warning" type="button" onclick='importCube()'>Restore Cube</button>
-                <button class="btn btn-secondary" type="button" onclick='normalizeCube()'>Normalize Cube</button>
-                <button class="btn btn-warning" type="button" onclick='randomizeCube()'>Randomize</button>
-                <button class="btn btn-success" type="button" onclick='solveCube()'>Solve</button>
+                <button class="btn btn-sm btn-danger" type="button" onclick='loadDefaultCube()'>Load Default Cube</button>
+                <button class="btn btn-sm btn-primary" type="button" onclick='saveCube()'>Save Cube</button>
+                <button class="btn btn-sm btn-warning" type="button" onclick='restoreCube()'>Restore Cube</button>
+                <button class="btn btn-sm btn-secondary" type="button" onclick='normalizeCube()'>Normalize Cube</button>
+                <button class="btn btn-sm btn-warning" type="button" onclick='randomizeCube()'>Randomize</button>
+                <button class="btn btn-sm btn-success" type="button" onclick='solveCube()'>Solve</button>
                 
             </div>
         </div>
+
+        <!--move listing -->
         <div class='row justify-content-center'>
             <div id='moves' class='col-12 text-center'>
                 <form id='movelist' action="{% url 'index' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <input autocomplete="off" autofocus class="form-control"
+                        <input autocomplete="off" class="form-control"
                             name="movelist" id='mymoves' placeholder="Move List" type="text" value=''>
                     </div>
                 </form>
             </div>
         </div>
+
+        <!--Place to enter new cube-->
         <div class='row justify-content-center'>
-            <div class='col-12 col-sm-6 text-center'>
-                <form id='cdescription' action="{% url 'index' %}" method="post">
-                    {% csrf_token %}
-                    <div class="form-horizontal">
-                        <label for="up" class="form-label">Up:</label>
-                        <input autocomplete="off" autofocus
-                            name="up" id='up' type="text" value=''>
-                    </div>
-                </form>
+            <div class='col-12 text-center'>
+                <button class="btn btn-sm btn-success" type="button" onclick='importCube()'>Import Cube Description</button>
+                <table class='table'>
+                    <form id='cdescription' action="{% url 'importCube' %}" method="post">
+                        {% csrf_token %}
+                        <tbody>
+                            <tr>
+                                <th><label for="up" class="form-label">Up:</label></th>
+                                <td><input autocomplete="off" name="up" id='up' type="text" value=''></td>
+                                <th><label for="left" class="form-label">Left:</label></th>
+                                <td><input autocomplete="off" name="left" id='left' type="text" value=''></td>
+                            </tr>
+                            <tr>
+                                <th><label for="front" class="form-label">Front:</label></th>
+                                <td><input autocomplete="off" name="front" id='front' type="text" value=''></td>
+                                <th><label for="right" class="form-label">Right:</label></th>
+                                <td><input autocomplete="off" name="right" id='right' type="text" value=''></td>
+                            </tr>
+                            <tr>
+                                <th><label for="back" class="form-label">Back:</label></th>
+                                <td><input autocomplete="off" name="back" id='back' type="text" value=''></td>
+                                <th><label for="down" class="form-label">Down:</label></th>
+                                <td><input autocomplete="off" name="down" id='down' type="text" value=''></td>
+                            </tr>
+                        </tbody>                
+                    </form>
+                </table>    
             </div>
+
+                
         </div>
 
 
     
 <script> 
 
-    // retrieves cube stored in server and calls putCubeSpec
-    async function importCube() {
+    // retrieves default cube from server and calls putCubeSpec
+    async function loadDefaultCube() {
         const formData = new FormData();
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
         const response = await fetch('{% url "default" %}', {
@@ -82,7 +109,20 @@ Rubik's Cube Solver
         });
         const data = await response.json();
         console.log('Success77:', data);
-        putCubeSpec(data.cubed);
+        putCubeSpec(data.cube);
+    }
+
+    // retrieves cube stored in server and calls putCubeSpec
+    async function restoreCube() {
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        const response = await fetch('{% url "restore" %}', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        console.log('Success77:', data);
+        putCubeSpec(data.cube);
     }
     
     // calls getCubeSpec and sends data to server
@@ -101,7 +141,7 @@ Rubik's Cube Solver
     }
 
     // calls getCubeSpec and sends data to server
-    async function exportCube() {
+    async function saveCube() {
         const cubed = getCubeSpec();
         const formData = new FormData();
         formData.append('cubed', JSON.stringify(cubed));
@@ -112,6 +152,27 @@ Rubik's Cube Solver
         });
         const data = await response.json();
         console.log('Success:', data);
+    }
+
+    // import cube description from input boxes
+    async function importCube() {
+        const cabeza = document.getElementById('up').value +
+                       document.getElementById('left').value +
+                       document.getElementById('front').value +
+                       document.getElementById('right').value +
+                       document.getElementById('back').value +
+                       document.getElementById('down').value;
+        const formData = new FormData();
+        formData.append('cabeza', JSON.stringify(cabeza));
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        const response = await fetch('{% url "importCube" %}', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        console.log('Success:', data);
+        putCubeSpec(data.cube);
+
     }
 
 
