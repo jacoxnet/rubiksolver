@@ -128,3 +128,7 @@ div.evencategory:hover {
 #adminorders, #upload {
     color: red;
 }
+
+input {
+    margin-top: 1em;
+}

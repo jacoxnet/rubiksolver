@@ -140,7 +140,8 @@ function normalizeCube() {
     console.log('y is at ', ycubie);
     console.log('r is at ', rcubie);
     console.log('moving ', ndict[ycubie + rcubie]);
-    multiMove(ndict[ycubie + rcubie]);
+    let m = [...ndict[ycubie + rcubie]];
+    multiMove(m);
 }
 
 
@@ -256,6 +257,7 @@ function singleMove(move) {
 // perform a series of moves in order with delay
 function multiMove(moves) {
     if (moves) {
+        document.querySelector('#mymoves').setAttribute('value', moves.join(''));
         for (let i = 0; i < moves.length; i++) {
             setTimeout((m) => singleMove(m), 500 * i, moves[i])
         }
@@ -266,7 +268,7 @@ function multiMove(moves) {
 function randomizeCube() {
     var moves = []
     movements.forEach((x) => {
-            moves.push(x);
+            moves.push(x.toLowerCase());
     });
     var rmoves = [];
     // create list of 3 copies of all movements

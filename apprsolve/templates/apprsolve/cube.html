@@ -55,7 +55,18 @@ Rubik's Cube Solver
                 </form>
             </div>
         </div>
-
+        <div class='row justify-content-center'>
+            <div class='col-12 col-sm-6 text-center'>
+                <form id='cdescription' action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-horizontal">
+                        <label for="up" class="form-label">Up:</label>
+                        <input autocomplete="off" autofocus
+                            name="up" id='up' type="text" value=''>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 
     
