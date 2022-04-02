@@ -116,7 +116,25 @@ function assembleCube()
     scene = document.getElementById('scene');
     pivot = document.getElementById('pivot');
 }
-    
+
+function isNormalized() {
+    var ycubie, rcubie;
+    // find positions of yellow and red middle pieces
+    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++) {  
+        let cubieName = allCubies[cubieIndex];
+        if ((cubieName.length == 1) && (pieces[cubieIndex].querySelector('.sticker').getAttribute('class') == 'sticker yellow')) {
+            ycubie = cubieName;
+        }
+        else if ((cubieName.length == 1) && (pieces[cubieIndex].querySelector('.sticker').getAttribute('class') == 'sticker red')) {
+            rcubie = cubieName;
+        }
+    }
+    if (ycubie == 'U' && rcubie == 'F')
+        return true;
+    else
+        return false;
+}
+
 function normalizeCube() {
     console.log('normalizing');
     var ycubie, rcubie;

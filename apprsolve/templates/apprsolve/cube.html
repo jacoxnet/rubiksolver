@@ -127,6 +127,9 @@ Rubik's Cube Solver
     
     // calls getCubeSpec and sends data to server
     async function solveCube() {
+        if (!isNormlized()) {
+
+        }
         const cubed = getCubeSpec();
         const formData = new FormData();
         formData.append('cubed', JSON.stringify(cubed));
