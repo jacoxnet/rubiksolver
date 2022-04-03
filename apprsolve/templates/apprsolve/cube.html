@@ -167,6 +167,24 @@ Rubik's Cube Solver
         multiMove(data.solution);
     }
 
+    async function slowSolveCube() {
+        if (!isNormalized()) {
+            displayAlerts("Please normalize cube before solving");
+            return;
+        }
+        const cubed = getCubeSpec();
+        const formData = new FormData();
+        formData.append('cubed', JSON.stringify(cubed));
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        const response = await fetch('{% url "slowsolve" %}', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        console.log('Success:', data);
+    }
+
+
     // calls getCubeSpec and sends data to server
     async function saveCube() {
         const cubed = getCubeSpec();
