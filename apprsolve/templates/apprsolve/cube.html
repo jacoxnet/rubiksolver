@@ -8,6 +8,10 @@ Rubik's Cube Solver
 {% block body %}
 
 
+    
+    <div id='alerts'>
+    </div>
+
     <div id='cubefield' class='container'>
         <div class='row h-100 justify-content-center'>
             <div class='col-12'>
@@ -22,9 +26,6 @@ Rubik's Cube Solver
         </div>
     </div>
 
-    
-    <div id='alerts'>
-    </div>
 
     <div class='container'>
         <!-- Individual button movements -->
@@ -114,17 +115,14 @@ Rubik's Cube Solver
 
     // display alert text and allow it to close
     function displayAlerts(message) {
-        let newdiv = document.createElement('div');
+        const newdiv = document.createElement('div');
         newdiv.setAttribute('class', 'alert alert-warning alert-dismissible fade show text-center');
         newdiv.setAttribute('role', 'alert');
-        let newbutt = document.createElement('button');
+        newdiv.innerHTML = message;
+        const newbutt = document.createElement('button');
         newbutt.setAttribute('type', 'button');
-        newbutt.setAttribute('class', 'close');
+        newbutt.setAttribute('class', 'btn-close');
         newbutt.setAttribute('data-bs-dismiss', 'alert');
-        newspan = document.createElement('span');
-        newspan.innerHTML = '&times;'
-        newbutt.appendChild(newspan);
-        newdiv.innerHTML = message + ' ';
         newdiv.appendChild(newbutt);
         alertplace = document.querySelector('#alerts');
         alertplace.appendChild(newdiv);
