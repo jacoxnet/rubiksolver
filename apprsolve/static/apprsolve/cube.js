@@ -271,12 +271,29 @@ function singleMove(move) {
     describeCube();
 }
 
+// play the multiple moves in the Move List
+function playCube() {
+    const moves = document.querySelector('#mymoves').value;
+    if (moves) {
+        multiMove(moves);
+    }
+}
+
+// play the multiple moves in the Move List - single step
+function singleStepCube() {
+    const moves = document.querySelector('#mymoves').value;
+    if (moves) {
+        multiMove(moves);
+    }
+}
+
+
+
 // perform a series of moves in order with delay
 // input is a list of chars not a string
 // also fills in #mymoves box with translated move list
 function multiMove(moves) {
     if (moves) {
-        document.querySelector('#mymoves').setAttribute('value', moves.join(''));
         for (let i = 0; i < moves.length; i++) {
             setTimeout((m) => singleMove(m), 500 * i, moves[i])
         }

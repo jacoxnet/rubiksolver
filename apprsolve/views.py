@@ -83,6 +83,6 @@ def solve(request):
         solution["solution"] = translated_moves
         return JsonResponse(solution, safe=False)
 
-def slowsolve(request):
-    if request.method == "POST":
+#def playmoves(request):
+ #   if request.method == "POST":
         
