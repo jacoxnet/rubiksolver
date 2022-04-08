@@ -7,11 +7,6 @@ Rubik's Cube Solver
 
 {% block body %}
 
-
-    
-    <div id='alerts'>
-    </div>
-
     <div id='cubefield' class='container'>
         <div class='row h-100 justify-content-center'>
             <div class='col-12'>
@@ -26,18 +21,37 @@ Rubik's Cube Solver
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="alerts" tabindex="-1" aria-labelledby="alerts" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-body text-center">
+                    <span id='alerttext'>This is the model body</span>
+                </div>
+                <div class='modal-footer'>
+                    <button type="button" class="btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class='container'>
         <!-- Individual button movements -->
         <div class='row justif-content-center'>
             <div id='movebutts' class='col-12 text-center'>
                 {% for butt in moves1 %}
-                    <button class="btn btn-sm btn-secondary" type="button" onclick='buttMove("{{ butt }}")'>{{ butt }}</button>
+                    <button class="btn btn-sm btn-secondary" type="button" onclick='buttMove("{{ butt }}")' id='button-{{ butt }}'>
+                        {{ butt }}
+                    </button>
                 {% endfor %}
             </div>
             <div id='movebutts2' class='col-12 text-center'>
                 {% for butt in moves2 %}
-                    <button class="btn btn-sm btn-secondary" type="button" onclick='buttMove("{{ butt }}")'>{{ butt }}</button>
+                    <button class="btn btn-sm btn-secondary" type="button" onclick='buttMove("{{ butt }}")' id='button-{{ butt }}'>
+                        {{ butt }}
+                    </button>
                 {% endfor %}
             </div>
 
@@ -50,30 +64,23 @@ Rubik's Cube Solver
                 <button class="btn btn-sm btn-secondary" type="button" onclick='normalizeCube()'>Normalize Cube</button>
                 <button class="btn btn-sm btn-warning" type="button" onclick='randomizeCube()'>Randomize</button>
                 <button class="btn btn-sm btn-success" type="button" onclick='solveCube()'>Solve</button>
-                <button class="btn btn-sm btn-info" type="button" onclick='playCube()'>Play Move List</button>
-                <button class="btn btn-sm btn-primary" type="button" onclick='singleStepCube()'>Single-Step Move List</button>
-                
-                
             </div>
         </div>
 
         <!--move listing -->
         <div class='row justify-content-center'>
-            <div id='moves' class='col-12'>
-                <form id='movelist' action="{% url 'index' %}" method="post">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <div class='col-12 col-md-2 text-center'>
-                            <label for="mymoves" class="form-label">Move List:</label>
-                        </div>
-                        <div class='col-12 col-md-10 text-left'>
-                            <input autocomplete="off" class="form-control"
-                                name="movelist" id='mymoves' type="text" value=''>
-                        </div>
-                    </div>
-                </form>
+            <div id='movelist' class='col-12 col-md-10 text-center'>
+                <h2>Move List: [<span id='mymoves'></span>]</h2>
             </div>
         </div>
+
+        <div class='row justify-content-center'>
+            <div id='movelist' class='col-12 text-center'>
+                <button class="btn btn-sm btn-info" type="button" onclick='playCube()'>Play Move List</button>
+                <button class="btn btn-sm btn-primary" type="button" onclick='singleStepCube()'>Single-Step Move List</button>
+            </div>
+        </div>
+
 
         <!--Place to enter new cube-->
         <div class='row justify-content-center'>
@@ -115,17 +122,12 @@ Rubik's Cube Solver
 
     // display alert text and allow it to close
     function displayAlerts(message) {
-        const newdiv = document.createElement('div');
-        newdiv.setAttribute('class', 'alert alert-warning alert-dismissible fade show text-center');
-        newdiv.setAttribute('role', 'alert');
-        newdiv.innerHTML = message;
-        const newbutt = document.createElement('button');
-        newbutt.setAttribute('type', 'button');
-        newbutt.setAttribute('class', 'btn-close');
-        newbutt.setAttribute('data-bs-dismiss', 'alert');
-        newdiv.appendChild(newbutt);
-        alertplace = document.querySelector('#alerts');
-        alertplace.appendChild(newdiv);
+        var myModal = new bootstrap.Modal(document.querySelector('#alerts'));
+        const alertText = document.querySelector('#alerttext');
+        alertText.innerHTML = message;
+        myModal.show();
+        myModal.addEventListener
+          
     }
 
     // retrieves default cube from server and calls putCubeSpec
@@ -171,7 +173,7 @@ Rubik's Cube Solver
         const data = await response.json();
         console.log('Success:', data);
         // place solution in move list
-        document.querySelector('#mymoves').setAttribute('value', data.solution.join(''));
+        document.querySelector('#mymoves').innerHTML = data.solution.join('');
         displayAlerts('Solution found');
     }
 
@@ -207,8 +209,8 @@ Rubik's Cube Solver
         const data = await response.json();
         console.log('Success:', data);
         putCubeSpec(data.cube);
-
     }
+
 
 
 </script>

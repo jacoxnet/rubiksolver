@@ -12,16 +12,15 @@ from apprsolve.cube import Cube
 
 # route /index
 def index(request):
-    if request.method == "GET":
-        # reset session data
-        username = register_new_user(request)
-        print('your username is ', username)
-        context = {
-            "name": username,
-            "moves1": ["u", "U", "d", "D", "l", "L", "r", "R", "f", "F", "b", "B"],
-            "moves2": ["m", "M", "s", "S", "e", "E", "x", "X", "y", "Y", "z", "Z"]
-        }
-        return render(request, "apprsolve/cube.html", context)
+    # reset session data
+    username = register_new_user(request)
+    print('your username is ', username)
+    context = {
+        "name": username,
+        "moves1": ["u", "U", "d", "D", "l", "L", "r", "R", "f", "F", "b", "B"],
+        "moves2": ["m", "M", "s", "S", "e", "E", "x", "X", "y", "Y", "z", "Z"]
+    }
+    return render(request, "apprsolve/cube.html", context)
 
 # route save/
 def save(request):

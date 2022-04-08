@@ -252,7 +252,7 @@ function quarterMove(face, direction) {
 
 // perform a single quarter-turn move of cube
 // if the move is a rotation, perform all equivalent moves
-// returns promise for async operation
+
 function singleMove(move) {
     if (movements.includes(move)) {
         quarterMove(move, -1);
@@ -273,7 +273,7 @@ function singleMove(move) {
 
 // play the multiple moves in the Move List
 function playCube() {
-    const moves = document.querySelector('#mymoves').value;
+    const moves = document.querySelector('#mymoves').innerHTML;
     if (moves) {
         multiMove(moves);
     }
@@ -281,9 +281,11 @@ function playCube() {
 
 // play the multiple moves in the Move List - single step
 function singleStepCube() {
-    const moves = document.querySelector('#mymoves').value;
+    const mymoves = document.querySelector('#mymoves');
+    var moves = mymoves.innerHTML;
     if (moves) {
-        multiMove(moves);
+        multiMove(moves[0]);
+        mymoves.innerHTML = moves.slice(1);
     }
 }
 
@@ -293,9 +295,23 @@ function singleStepCube() {
 // input is a list of chars not a string
 // also fills in #mymoves box with translated move list
 function multiMove(moves) {
+
+    const highlight = (m) => {
+        document.getElementById('button-' + m).classList.add('text-danger');
+        oldhighlit = m;
+    }
+    const dehighlight = (m) => {
+        document.getElementById('button-' + m).classList.remove('text-danger');
+    }
+    function smove(m) {
+        singleMove(m);
+    }
+
     if (moves) {
         for (let i = 0; i < moves.length; i++) {
-            setTimeout((m) => singleMove(m), 500 * i, moves[i])
+            setTimeout((m) => highlight(m), 500 * i, moves[i]);
+            setTimeout((m) => smove(m), 500 * i, moves[i]);
+            setTimeout((m) => dehighlight(m), 500 * (i + 1), moves[i]);
         }
         setTimeout(() => describeCube(), 500 * moves.length);
     }
@@ -318,7 +334,8 @@ function randomizeCube() {
         [rmoves[i], rmoves[j]] = [rmoves[j], rmoves[i]];
     }
     console.log(rmoves);
-    multiMove(rmoves); 
+    // place solution in move list
+    document.querySelector('#mymoves').innerHTML = rmoves.join('');
 }
 
 function buttMove(button) {
