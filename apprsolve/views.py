@@ -82,6 +82,3 @@ def solve(request):
         solution["solution"] = translated_moves
         return JsonResponse(solution, safe=False)
 
-#def playmoves(request):
- #   if request.method == "POST":
-        
