@@ -202,13 +202,17 @@ Rubik's Cube Solver
         const formData = new FormData();
         formData.append('cabeza', JSON.stringify(cabeza));
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-        const response = await fetch('{% url "importCube" %}', {
+        try {
+            const response = await fetch('{% url "importCube" %}', {
             method: 'POST',
             body: formData
-        });
-        const data = await response.json();
-        console.log('Success:', data);
-        putCubeSpec(data.cube);
+            });
+            const data = await response.json();
+            console.log('Success:', data);
+            putCubeSpec(data.cube);
+        } catch(e) {
+            console.error(e);
+        }
     }
 
 
