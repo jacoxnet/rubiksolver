@@ -28,6 +28,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-_meze8laga=g5_
 DEBUG = os.environ.get('DEBUG', '') != 'False'
 
 ALLOWED_HOSTS = [['0.0.0.0', 'localhost', '127.0.0.1', 'rsolver-app.herokuapp.com']]
+CSRF_TRUSTED_ORIGINS = ['https://rsolver-app.herokuapp.com']
 
 
 # Application definition
