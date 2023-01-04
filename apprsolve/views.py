@@ -3,6 +3,13 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.urls import reverse
 import json
+
+# fix deprecation of some aliases from collections.abc into collections in python3.10
+# to satisfy import of rubik_solver
+import collections.abc
+collections.Iterable = collections.abc.Iterable
+collections.Mapping = collections.abc.Mapping
+
 from rubik_solver import utils
 
 from apprsolve.rubik_init import register_new_user
