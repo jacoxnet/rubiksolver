@@ -1,8 +1,8 @@
 // cube movements defined here
-var movements = ['L', 'M', 'R', 'U', 'E', 'D', 'F', 'S', 'B'];
-var ccmovements = ['l', 'm', 'r', 'u', 'e', 'd', 'f', 's', 'b'];
-var rotations = ['X', 'Y', 'Z', 'x', 'y', 'z'];
-var rotation_equiv = {'x': 'rLM', 'X': 'Rlm', 'y': 'uED', 'Y': 'Ued',
+const movements = ['L', 'M', 'R', 'U', 'E', 'D', 'F', 'S', 'B'];
+const ccmovements = ['l', 'm', 'r', 'u', 'e', 'd', 'f', 's', 'b'];
+const rotations = ['X', 'Y', 'Z', 'x', 'y', 'z'];
+const rotation_equiv = {'x': 'rLM', 'X': 'Rlm', 'y': 'uED', 'Y': 'Ued',
                       'z': 'fsB', 'Z':'FSb'};
 
 // arrays of slices of the cube
@@ -22,7 +22,7 @@ slice['B'] = [ "BLD", "BD", "BRD", "BR", "BRU", "BU", "BLU", "BL", "B" ];
 const visFaces = ['F', 'B', 'L', 'R', 'U', 'D'];
 
 // Cabezas numbering system
-cabList = {'FLU': [18, 11, 6],
+const cabList = {'FLU': [18, 11, 6],
           'FU':  [19, 7],
           'FRU': [20, 27, 8],
           'FL':  [21, 14],
@@ -52,7 +52,7 @@ cabList = {'FLU': [18, 11, 6],
 
 
 // dictionary of quarter-turn clockwise transitions
-var transition = {};
+const transition = {};
 transition['L'] = {'L': 'L', 'F': 'D', 'D': 'B', 'B': 'U', 'U': 'F'};
 transition['M'] = {'F': 'D', 'D': 'B', 'B': 'U', 'U': 'F'};
 transition['R'] = {'R': 'R', 'F': 'U', 'U': 'B', 'B': 'D', 'D': 'F'};
@@ -64,11 +64,13 @@ transition['S'] = {'L': 'U', 'U': 'R', 'R': 'D', 'D': 'L'};
 transition['B'] = {'B': 'B', 'R': 'U', 'U': 'L', 'L': 'D', 'D': 'R'};
 
 // initial colors of cube by face
-var initialColors = {'F': 'red', 'B': 'orange', 'L': 'blue', 'R': 'green', 
+const initialColors = {'F': 'red', 'B': 'orange', 'L': 'blue', 'R': 'green', 
     'U': 'yellow', 'D': 'white'};
 
+const colorWheel = ['red', 'orange', 'blue', 'green', 'yellow', 'white']
+
 // rotation axes by face of cube (+ means clockwise, minus countercw)
-var rotAxis = {'F': 'Z+', 'B': 'Z-', 'L': 'X-', 'R': 'X+', 'U': 'Y-', 'D': 'Y+',
+const rotAxis = {'F': 'Z+', 'B': 'Z-', 'L': 'X-', 'R': 'X+', 'U': 'Y-', 'D': 'Y+',
     'M': 'X-', 'E': 'Y+', 'S': 'Z+'};
 
 // allCubies is an array of the names of all 26 cubies
@@ -115,6 +117,9 @@ function assembleCube()
     pieces = document.querySelectorAll('.piece');        
     scene = document.getElementById('scene');
     pivot = document.getElementById('pivot');
+
+    // assign color change function
+    assignColorClick();
 }
 
 function isNormalized() {
@@ -169,16 +174,40 @@ function assignCabezas() {
     {
         let cubieName = allCubies[cubieIndex];
         // sets cabcube to the list of cabezas face numbers for that cubie
-        cabcube = cabList[cubieName];
+        const cabCube = cabList[cubieName];
         // cycle through each letter of facename
         for (let face = 0; face < cubieName.length; face++)
         {
-            let n = pieces[cubieIndex].querySelector('.element.' + allCubies[cubieIndex][face] + '>div');
+            const n = pieces[cubieIndex].querySelector('.element.' + allCubies[cubieIndex][face] + '>div');
             // put cabezas number on face of sticker
-            n.innerHTML = cabList[cubieName][face];
+            n.innerHTML = cabCube[face];
         }
     }
 }
+
+// place on-click function on each sticker for color change
+function assignColorClick() {
+    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
+    {
+        let cubieName = allCubies[cubieIndex];
+        // cycle through each letter of facename
+        for (let face = 0; face < cubieName.length; face++)
+        {
+            // select color div under element div
+            const n = pieces[cubieIndex].querySelector('.element.' + allCubies[cubieIndex][face] + '>div');
+            n.addEventListener("click", colorClick, true);            
+        }
+    }
+}
+
+function colorClick(e) {
+
+    const oldColor = e.currentTarget.className.split(' ')[1];
+    const newColor = colorWheel[(colorWheel.indexOf(oldColor) + 1) % colorWheel.length];
+    e.currentTarget.className = 'sticker ' + newColor;
+    console.log(`old ${oldColor}, new ${newColor}`);
+}
+
 
 // Swaps stickers of the face by direction, performed after animation 
 // to rotate the face (direction 1 cw, -1 ccw)
@@ -342,75 +371,37 @@ function buttMove(button) {
     multiMove([button]);
 }
 
-function checkKeys(event)
-{
-    if (movements.includes(event.key) || ccmovements.includes(event.key) || rotations.includes(event.key)) {
-        multiMove([event.key]);
-    }
-    else {
-        let mark = false, x = 0, y = 0;
-        switch (event.key)
-        {
-            case 'ArrowUp':
-                x++;
-                mark = true;
-            case 'ArrowDown':
-                if (!mark)
-                {
-                    x--;
-                    mark = true;
-                }
-            case 'ArrowLeft':
-                if (!mark)
-                {
-                    y--;
-                    mark = true;
-                }
-            case 'ArrowRight':
-                if (!mark)
-                {
-                    y++;
-                }
-                let startXY = pivot.style.transform.match(/-?\d+\.?\d*/g).map(Number);
-                pivot.style.transform = 
-                    'rotateX(' + (startXY[0] + x * 2) + 'deg) ' + 
-                    'rotateY(' + (startXY[1] + y * 2) + 'deg)';
-            default:
+// reads the current cube spec and translates to Cabezas notation
+function getCabezas() {
+    cubeSpec = getCubeSpec();
+    // allocate space for returned value 
+    returnVal = new Array(54).fill(' ');
+    // cycle through all cubies
+    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++) {
+        const cubeName = allCubies[cubieIndex];
+        // sets cabCube to the list of cabezas face numbers for that cubie
+        const cabCube = cabList[cubeName];
+        // cycle through each letter of facename
+        for (let face = 0; face < cubeName.length; face++) {            
+            let color = pieces[cubieIndex].querySelector('.element.' + 
+                cubeName[face]).firstChild.className.split(' ')[1];
+            // assign the proper position in the translated return value with the 1st letter of color
+            returnVal[cabCube[face]] = color.substring(0,1);
         }
     }
-}
-
-   // reads the current cube spec and translates to Cabezas notation
-   function getCabezas() {
-        cubeSpec = getCubeSpec();
-        // allocate space for returned value 
-        returnVal = new Array(54).fill(' ');
-        // cycle through all cubies
-        for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++) {
-            const cubeName = allCubies[cubieIndex];
-            // sets cabCube to the list of cabezas face numbers for that cubie
-            const cabCube = cabList[cubeName];
-            // cycle through each letter of facename
-            for (let face = 0; face < cubeName.length; face++) {            
-                let color = pieces[cubieIndex].querySelector('.element.' + 
-                    cubeName[face]).firstChild.className.split(' ')[1];
-                // assign the proper position in the translated return value with the 1st letter of color
-                returnVal[cabCube[face]] = color.substring(0,1);
-            }
-        }
     return returnVal.join('');
 }
 
-    // place description of cube in six fields on page of DOM
-    function describeCube() {
-        let c = getCabezas();
-        document.getElementById('up').value = c.substring(0,9);
-        document.getElementById('left').value = c.substring(9,18);
-        document.getElementById('front').value = c.substring(18,27);
-        document.getElementById('right').value = c.substring(27,36);
-        document.getElementById('back').value = c.substring(36,45);
-        document.getElementById('down').value = c.substring(45,54);
-    }
+// place description of cube in six fields on page of DOM
+function describeCube() {
+    let c = getCabezas();
+    document.getElementById('up').value = c.substring(0,9);
+    document.getElementById('left').value = c.substring(9,18);
+    document.getElementById('front').value = c.substring(18,27);
+    document.getElementById('right').value = c.substring(27,36);
+    document.getElementById('back').value = c.substring(36,45);
+    document.getElementById('down').value = c.substring(45,54);
+}
 
 // argument is a JSON description of a complete cube in this form:
 // { 'FLU': ['red', 'white', 'blue'], ... }
@@ -453,5 +444,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     assembleCube();
 
-    ///window.addEventListener('keydown', checkKeys);
 });
