@@ -201,7 +201,6 @@ function assignColorClick() {
 }
 
 function colorClick(e) {
-
     const oldColor = e.currentTarget.className.split(' ')[1];
     const newColor = colorWheel[(colorWheel.indexOf(oldColor) + 1) % colorWheel.length];
     e.currentTarget.className = 'sticker ' + newColor;
