@@ -187,24 +187,26 @@ function assignCabezas() {
 
 // place on-click function on each sticker for color change
 function assignColorClick() {
-    for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
-    {
-        let cubieName = allCubies[cubieIndex];
-        // cycle through each letter of facename
-        for (let face = 0; face < cubieName.length; face++)
-        {
-            // select color div under element div
-            const n = pieces[cubieIndex].querySelector('.element.' + allCubies[cubieIndex][face] + '>div');
-            n.addEventListener("click", colorClick, true);            
-        }
-    }
+    scene.addEventListener("click", colorClick);
+    // for (let cubieIndex = 0; cubieIndex < 26; cubieIndex++)
+    // {
+    //     let cubieName = allCubies[cubieIndex];
+    //     // cycle through each letter of facename
+    //     for (let face = 0; face < cubieName.length; face++)
+    //     {
+    //         // select color div under element div
+    //         const n = pieces[cubieIndex].querySelector('.element.' + allCubies[cubieIndex][face]);
+    //         n.addEventListener("click", colorClick);            
+    //     }
+    // }
 }
 
 function colorClick(e) {
-    const oldColor = e.currentTarget.className.split(' ')[1];
+    console.log(`Mouse click ${e.clientX}, ${e.clientY}`);
+    const oldColor = e.target.closest('.sticker').className.split(' ')[1];
     const newColor = colorWheel[(colorWheel.indexOf(oldColor) + 1) % colorWheel.length];
-    e.currentTarget.className = 'sticker ' + newColor;
-    console.log(`old ${oldColor}, new ${newColor}`);
+    e.target.closest('.sticker').className = 'sticker ' + newColor;
+    // console.log(`old ${oldColor}, new ${newColor}`);
 }
 
 
