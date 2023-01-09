@@ -1,5 +1,13 @@
 # rsolver-app
 
+## 9 Jan 2023
+Added ability to click on individual cubies to change their color. Ran into a painful
+firefox CSS bug in which the background scene was preventing clicks on some of the cubies because
+it was "in front of" those cubies after 3d rotations. Moved transform-style: preserve 3d from background
+to cube and it fixed the problem.
+-------------
+
+
 Demonstration app of a Rubiks cube solver. The home page presents a graphical 3-D cube in default solved
 configuration. The 2 lines of movement buttons below the cube `UDLRFBMSE`, and so on, allow
 you to move the cube's slices or (in the case of `XYZ`) rotate the entire cube.
