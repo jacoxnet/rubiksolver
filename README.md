@@ -1,6 +1,7 @@
 # rsolver-app
 
 ## 9 Jan 2023
+
 Added ability to click on individual cubies to change their color. Ran into a painful
 firefox CSS bug in which the background scene was preventing clicks on some of the cubies because
 it was "in front of" those cubies after 3d rotations. Moved transform-style: preserve 3d from background
